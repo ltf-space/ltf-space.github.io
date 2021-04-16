@@ -16,9 +16,10 @@
 <meta property="og:description" content="1234567891011121314151617181920212223242526272829&#x2F;&#x2F; 发布订阅中心, on-订阅, off取消订阅, emit发布, 内部需要一个单独事件中心caches进行存储;interface CacheProps &amp;#123;  [key: string]: Array&lt;((data?: unknown) &#x3D;&gt; void)&gt;;&amp;#125;">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-04-10T12:54:21.482Z">
-<meta property="article:modified_time" content="2021-04-10T12:55:03.835Z">
+<meta property="article:modified_time" content="2021-04-16T13:46:39.914Z">
 <meta property="article:author" content="Ltf-space">
-<meta property="article:tag" content="ltf">
+<meta property="article:tag" content="目录">
+<meta property="article:tag" content="手写发布订阅">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="ltf_个人博客" type="application/atom+xml">
@@ -60,7 +61,7 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+				<li><a href="/tags/%E7%9B%AE%E5%BD%95">目录</a></li>
 	        
 			</ul>
 		</nav>
@@ -84,7 +85,9 @@
 				
 					<a class="github" target="_blank" href="https://github.com/ltf-space" title="github"><i class="icon-github"></i></a>
 		        
-					<a class="mail" target="_blank" href="/1036285771@qq.com" title="mail"><i class="icon-mail"></i></a>
+					<a class="qq" target="_blank" href="/images/qq.png" title="qq"><i class="icon-qq"></i></a>
+		        
+					<a class="weixin" target="_blank" href="/images/wechat.png" title="weixin"><i class="icon-weixin"></i></a>
 		        
 			</div>
 		</nav>
@@ -121,7 +124,9 @@
 					
 						<a class="github" target="_blank" href="https://github.com/ltf-space" title="github"><i class="icon-github"></i></a>
 			        
-						<a class="mail" target="_blank" href="/1036285771@qq.com" title="mail"><i class="icon-mail"></i></a>
+						<a class="qq" target="_blank" href="/images/qq.png" title="qq"><i class="icon-qq"></i></a>
+			        
+						<a class="weixin" target="_blank" href="/images/wechat.png" title="weixin"><i class="icon-weixin"></i></a>
 			        
 				</div>
 			</nav>
@@ -132,7 +137,7 @@
 				
 					<li style="width: 50%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+					<li style="width: 50%"><a href="/tags/%E7%9B%AE%E5%BD%95">目录</a></li>
 		        
 				</ul>
 			</nav>
@@ -167,7 +172,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 发布订阅中心, on-订阅, off取消订阅, emit发布, 内部需要一个单独事件中心caches进行存储;</span><br><span class="line"></span><br><span class="line">interface CacheProps &#123;</span><br><span class="line">  [key: string]: Array&lt;((data?: unknown) =&gt; void)&gt;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Observer &#123;</span><br><span class="line"></span><br><span class="line">  private caches: CacheProps = &#123;&#125;; // 事件中心</span><br><span class="line"></span><br><span class="line">  on (eventName: string, fn: (data?: unknown) =&gt; void)&#123; // eventName事件名-独一无二, fn订阅后执行的自定义行为</span><br><span class="line">    this.caches[eventName] = this.caches[eventName] || [];</span><br><span class="line">    this.caches[eventName].push(fn);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  emit (eventName: string, data?: unknown) &#123; // 发布 =&gt; 将订阅的事件进行统一执行</span><br><span class="line">    <span class="keyword">if</span> (this.caches[eventName]) &#123;</span><br><span class="line">      this.caches[eventName].forEach((fn: (data?: unknown) =&gt; void) =&gt; fn(data));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  off (eventName: string, fn?: (data?: unknown) =&gt; void) &#123; // 取消订阅 =&gt; 若fn不传, 直接取消该事件所有订阅信息</span><br><span class="line">    <span class="keyword">if</span> (this.caches[eventName]) &#123;</span><br><span class="line">      const newCaches = fn ? this.caches[eventName].filter(e =&gt; e !== fn) : [];</span><br><span class="line">      this.caches[eventName] = newCaches;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发布订阅中心, on-订阅, off取消订阅, emit发布, 内部需要一个单独事件中心caches进行存储;</span></span><br><span class="line"></span><br><span class="line">interface CacheProps &#123;</span><br><span class="line">  [key: string]: <span class="built_in">Array</span>&lt;(<span class="function">(<span class="params">data?: unknown</span>) =&gt;</span> <span class="keyword">void</span>)&gt;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  private caches: CacheProps = &#123;&#125;; <span class="comment">// 事件中心</span></span><br><span class="line"></span><br><span class="line">  on (eventName: string, <span class="attr">fn</span>: <span class="function">(<span class="params">data?: unknown</span>) =&gt;</span> <span class="keyword">void</span>)&#123; <span class="comment">// eventName事件名-独一无二, fn订阅后执行的自定义行为</span></span><br><span class="line">    <span class="built_in">this</span>.caches[eventName] = <span class="built_in">this</span>.caches[eventName] || [];</span><br><span class="line">    <span class="built_in">this</span>.caches[eventName].push(fn);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  emit (eventName: string, data?: unknown) &#123; <span class="comment">// 发布 =&gt; 将订阅的事件进行统一执行</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.caches[eventName]) &#123;</span><br><span class="line">      <span class="built_in">this</span>.caches[eventName].forEach(<span class="function">(<span class="params">fn: (data?: unknown) =&gt; <span class="keyword">void</span></span>) =&gt;</span> fn(data));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  off (eventName: string, fn?: <span class="function">(<span class="params">data?: unknown</span>) =&gt;</span> <span class="keyword">void</span>) &#123; <span class="comment">// 取消订阅 =&gt; 若fn不传, 直接取消该事件所有订阅信息</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.caches[eventName]) &#123;</span><br><span class="line">      <span class="keyword">const</span> newCaches = fn ? <span class="built_in">this</span>.caches[eventName].filter(<span class="function"><span class="params">e</span> =&gt;</span> e !== fn) : [];</span><br><span class="line">      <span class="built_in">this</span>.caches[eventName] = newCaches;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
 
       
@@ -206,6 +211,21 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">目录</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">手写发布订阅</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -415,6 +435,34 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">目录</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">here is a hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Hello World</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">利用css画三角形</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">nodejs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">自适应布局</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">手写发布订阅</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
